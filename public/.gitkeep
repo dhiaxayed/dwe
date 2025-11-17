@@ -1,0 +1,7 @@
+# Ignore all files by default
+*
+
+# But not these files or directories:
+!.gitignore
+!public/
+!public/.gitkeep

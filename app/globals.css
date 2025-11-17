@@ -1,0 +1,124 @@
+﻿@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light;
+    --background: 45 53% 95%;
+    --foreground: 228 30% 14%;
+    --muted: 42 28% 88%;
+    --muted-foreground: 228 20% 38%;
+    --card: 40 36% 98%;
+    --card-foreground: 228 30% 14%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 228 30% 14%;
+    --border: 38 24% 82%;
+    --input: 38 24% 82%;
+    --ring: 232 100% 69%;
+    --primary: 232 100% 69%;
+    --primary-foreground: 226 100% 96%;
+    --secondary: 231 34% 24%;
+    --secondary-foreground: 220 40% 92%;
+    --accent: 196 100% 66%;
+    --accent-foreground: 224 52% 12%;
+    --highlight: 200 100% 72%;
+    --highlight-foreground: 222 40% 18%;
+    --success: 152 73% 64%;
+    --warning: 42 89% 70%;
+    --danger: 0 78% 64%;
+    --danger-foreground: 210 40% 98%;
+    --radius-sm: 0.5rem;
+    --radius-md: 0.75rem;
+    --radius-lg: 1rem;
+    --radius-xl: 1.25rem;
+    --radius-2xl: 1.5rem;
+    --radius-3xl: 2rem;
+    --motion-fast: 180ms;
+    --motion-base: 240ms;
+    --motion-slow: 320ms;
+  }
+
+  .dark {
+    color-scheme: dark;
+    --background: 216 53% 7%;
+    --foreground: 220 39% 92%;
+    --muted: 220 32% 16%;
+    --muted-foreground: 220 28% 68%;
+    --card: 219 45% 9%;
+    --card-foreground: 220 39% 92%;
+    --popover: 219 45% 9%;
+    --popover-foreground: 220 39% 92%;
+    --border: 220 30% 18%;
+    --input: 220 30% 18%;
+    --ring: 232 100% 69%;
+    --primary: 232 100% 69%;
+    --primary-foreground: 222 62% 12%;
+    --secondary: 231 38% 20%;
+    --secondary-foreground: 220 39% 92%;
+    --accent: 198 100% 65%;
+    --accent-foreground: 224 52% 12%;
+    --highlight: 200 100% 62%;
+    --highlight-foreground: 222 62% 12%;
+    --success: 152 73% 64%;
+    --warning: 42 89% 70%;
+    --danger: 0 78% 64%;
+    --danger-foreground: 210 40% 96%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    background-image: radial-gradient(circle at 10% 20%, rgba(98, 116, 255, 0.12), transparent 55%), radial-gradient(circle at 80% 0%, rgba(77, 210, 255, 0.08), transparent 60%), linear-gradient(180deg, hsl(var(--background)) 0%, hsl(var(--background)) 40%, hsl(var(--background)) 100%);
+  }
+}
+
+@layer base {
+  html {
+    font-feature-settings: "liga" 1, "calt" 1;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: var(--font-sans);
+  }
+
+  code, pre {
+    font-family: var(--font-mono);
+  }
+
+  ::selection {
+    @apply bg-highlight text-highlight-foreground;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .glass-card {
+    @apply border border-white/10 bg-white/70 text-foreground shadow-soft backdrop-blur-md dark:border-white/6 dark:bg-white/5;
+  }
+
+  .grain-overlay::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 400'%3E%3Cfilter id='n' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)' opacity='0.08'/%3E%3C/svg%3E");
+    mix-blend-mode: soft-light;
+  }
+}
