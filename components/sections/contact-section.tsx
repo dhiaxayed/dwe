@@ -4,6 +4,8 @@ import Link from "next/link"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
+import emailjs from "@emailjs/browser"
+import { toast } from "sonner"
 
 import { getSite } from "@/data/site"
 import { useI18n } from "@/lib/i18n"
@@ -45,6 +47,8 @@ const copy = {
         description: "Acces a un espace projet dedie, reporting hebdomadaire et KPIs partages.",
       },
     ],
+    successMessage: "Demande envoyee avec succes !",
+    errorMessage: "Une erreur est survenue. Veuillez reessayer.",
   },
   en: {
     badge: "Contact",
@@ -77,6 +81,8 @@ const copy = {
         description: "Dedicated workspace, weekly reporting and shared KPIs.",
       },
     ],
+    successMessage: "Request sent successfully!",
+    errorMessage: "An error occurred. Please try again.",
   },
 }
 
@@ -99,13 +105,40 @@ export function ContactSection() {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { isSubmitting },
   } = useForm<ContactForm>({
     resolver: zodResolver(contactSchema),
   })
 
-  const onSubmit = () => {
-    // form is posted via action attribute. Hook kept for potential custom handling.
+  const onSubmit = async (data: ContactForm) => {
+    console.log("EmailJS debug variables:", {
+      serviceId: process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID,
+      templateId: process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID,
+      publicKey: process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY,
+    })
+    try {
+      const response = await emailjs.send(
+        process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
+        process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
+        {
+          from_name: data.fullname,
+          from_email: data.email,
+          company: data.company || "N/A",
+          phone: data.phone || "N/A",
+          project_details: data.project,
+          budget: data.budget || "N/A",
+          to_email: site.email,
+        },
+        process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!
+      )
+      console.log("EmailJS Success:", response)
+      toast.success(labels.successMessage)
+      reset()
+    } catch (error) {
+      console.error("EmailJS Error details:", error)
+      toast.error(labels.errorMessage)
+    }
   }
 
   return (
@@ -140,9 +173,6 @@ export function ContactSection() {
         </div>
 
         <form
-          method="POST"
-          action={`https://formsubmit.co/${site.email}`}
-          target="_blank"
           className="space-y-6 rounded-[32px] border border-border/40 bg-card/85 p-8 shadow-lg shadow-primary/5"
           onSubmit={handleSubmit(onSubmit)}
         >

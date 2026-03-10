@@ -1,6 +1,11 @@
 "use client"
 
 import Link from "next/link"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
+import { zodResolver } from "@hookform/resolvers/zod"
+import emailjs from "@emailjs/browser"
+import { toast } from "sonner"
 
 import { getSite } from "@/data/site"
 import { useI18n } from "@/lib/i18n"
@@ -49,6 +54,8 @@ const copy = {
         description: "Accès à un espace projet dédié, reporting hebdomadaire et KPIs partagés.",
       },
     ],
+    successMessage: "Message envoyé avec succès !",
+    errorMessage: "Une erreur est survenue. Veuillez réessayer.",
   },
   en: {
     heroBadge: "Contact",
@@ -88,13 +95,65 @@ const copy = {
         description: "Dedicated project space, weekly reporting and shared KPIs.",
       },
     ],
+    successMessage: "Message sent successfully!",
+    errorMessage: "An error occurred. Please try again.",
   },
 } as const
+
+const contactSchema = z.object({
+  fullname: z.string().min(2),
+  company: z.string().optional(),
+  email: z.string().email(),
+  phone: z.string().optional(),
+  project: z.string().min(10),
+  budget: z.string().optional(),
+})
+
+type ContactForm = z.infer<typeof contactSchema>
 
 export function ContactPageContent() {
   const { locale } = useI18n()
   const labels = copy[locale]
   const site = getSite(locale)
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { isSubmitting },
+  } = useForm<ContactForm>({
+    resolver: zodResolver(contactSchema),
+  })
+
+  const onSubmit = async (data: ContactForm) => {
+    console.log("EmailJS debug variables (Page):", {
+      serviceId: process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID,
+      templateId: process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID,
+      publicKey: process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY,
+    })
+    try {
+      const response = await emailjs.send(
+        process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
+        process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
+        {
+          from_name: data.fullname,
+          from_email: data.email,
+          company: data.company || "N/A",
+          phone: data.phone || "N/A",
+          project_details: data.project,
+          budget: data.budget || "N/A",
+          to_email: site.email,
+        },
+        process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!
+      )
+      console.log("EmailJS Success (Page):", response)
+      toast.success(labels.successMessage)
+      reset()
+    } catch (error) {
+      console.error("EmailJS Error details (Page):", error)
+      toast.error(labels.errorMessage)
+    }
+  }
 
   return (
     <main className="space-y-24 py-24">
@@ -130,23 +189,27 @@ export function ContactPageContent() {
         </div>
 
         <form
-          method="POST"
-          action={`https://formsubmit.co/${site.email}`}
-          target="_blank"
+          onSubmit={handleSubmit(onSubmit)}
           className="space-y-6 rounded-[32px] border border-border/60 bg-card/80 p-8 shadow-lg shadow-primary/5"
         >
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
               <Label htmlFor="fullname">{labels.form.fullname}</Label>
-              <Input id="fullname" name="fullname" placeholder="Alex Martin" required autoComplete="name" />
+              <Input
+                id="fullname"
+                placeholder="Alex Martin"
+                required
+                autoComplete="name"
+                {...register("fullname")}
+              />
             </div>
             <div className="space-y-2">
               <Label htmlFor="company">{labels.form.company}</Label>
               <Input
                 id="company"
-                name="company"
                 placeholder={labels.form.companyPlaceholder}
                 autoComplete="organization"
+                {...register("company")}
               />
             </div>
           </div>
@@ -155,21 +218,21 @@ export function ContactPageContent() {
               <Label htmlFor="email">{labels.form.email}</Label>
               <Input
                 id="email"
-                name="email"
                 type="email"
                 placeholder={labels.form.emailPlaceholder}
                 required
                 autoComplete="email"
+                {...register("email")}
               />
             </div>
             <div className="space-y-2">
               <Label htmlFor="phone">{labels.form.phone}</Label>
               <Input
                 id="phone"
-                name="phone"
                 type="tel"
                 placeholder={labels.form.phonePlaceholder}
                 autoComplete="tel"
+                {...register("phone")}
               />
             </div>
           </div>
@@ -177,21 +240,21 @@ export function ContactPageContent() {
             <Label htmlFor="project">{labels.form.project}</Label>
             <Textarea
               id="project"
-              name="project"
               placeholder={labels.form.projectPlaceholder}
               rows={6}
               required
+              {...register("project")}
             />
           </div>
           <div className="space-y-2">
             <Label htmlFor="budget">{labels.form.budget}</Label>
-            <Input id="budget" name="budget" placeholder={labels.form.budgetPlaceholder} />
+            <Input id="budget" placeholder={labels.form.budgetPlaceholder} {...register("budget")} />
           </div>
           <div className="flex items-start gap-3 rounded-2xl border border-dashed border-primary/40 bg-primary/5 px-4 py-3 text-sm text-muted-foreground">
             <span className="mt-1 h-1.5 w-1.5 rounded-full bg-primary" />
             <p>{labels.privacy}</p>
           </div>
-          <Button type="submit" size="lg" className="w-full rounded-full px-7 py-6">
+          <Button type="submit" size="lg" className="w-full rounded-full px-7 py-6" disabled={isSubmitting}>
             {labels.form.submit}
           </Button>
         </form>
