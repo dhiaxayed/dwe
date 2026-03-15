@@ -2,8 +2,8 @@ import type { Metadata } from "next"
 import Script from "next/script"
 import { notFound } from "next/navigation"
 
-import { services } from "@/data/services"
-import { site } from "@/data/site"
+import { getService, getServiceSlugs } from "@/data/services"
+import { getSite } from "@/data/site"
 import { buildBreadcrumbJsonLd, createMetadata } from "@/lib/seo"
 import { ServiceDetailContent } from "@/components/pages/service-detail-content"
 
@@ -16,19 +16,18 @@ type ServicePageProps = {
 }
 
 export function generateStaticParams() {
-  return services.map((service) => ({
-    slug: service.slug,
-  }))
+  return getServiceSlugs().map((slug) => ({ slug }))
 }
 
 export async function generateMetadata({ params }: ServicePageProps): Promise<Metadata> {
   const { slug } = await params
-  const service = services.find((item) => item.slug === slug)
+  const site = getSite("fr")
+  const service = getService("fr", slug)
 
   if (!service) {
     return createMetadata({
       title: "Service introuvable",
-      description: "Le service que vous recherchez n&apos;existe pas ou plus.",
+      description: "Le service que vous recherchez n'existe pas ou plus.",
     })
   }
 
@@ -50,7 +49,8 @@ export async function generateMetadata({ params }: ServicePageProps): Promise<Me
 
 export default async function ServiceDetailPage({ params }: ServicePageProps) {
   const { slug } = await params
-  const service = services.find((item) => item.slug === slug)
+  const site = getSite("fr")
+  const service = getService("fr", slug)
 
   if (!service) {
     notFound()
@@ -99,7 +99,7 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
   }
 
   return (
-    <main>
+    <>
       <Script
         id={`jsonld-service-${service.slug}`}
         type="application/ld+json"
@@ -113,6 +113,6 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
       <ServiceDetailContent slug={service.slug} />
-    </main>
+    </>
   )
 }

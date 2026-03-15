@@ -1,6 +1,5 @@
 "use client"
 
-import Image from "next/image"
 import Link from "next/link"
 import { Github, Linkedin, Mail } from "lucide-react"
 
@@ -12,12 +11,12 @@ const copy = {
   fr: {
     contact: "Contact",
     office: "Bureau",
-    rights: (name: string) => `\u00A9 ${new Date().getFullYear()} ${name}. Tous droits reserves.`,
+    rights: (name: string) => `© ${new Date().getFullYear()} ${name}. Tous droits réservés.`,
   },
   en: {
     contact: "Contact",
     office: "Office",
-    rights: (name: string) => `\u00A9 ${new Date().getFullYear()} ${name}. All rights reserved.`,
+    rights: (name: string) => `© ${new Date().getFullYear()} ${name}. All rights reserved.`,
   },
 }
 
@@ -26,19 +25,17 @@ export function SiteFooter() {
   const labels = copy[locale]
   const site = getSite(locale)
   const navigation = getNavigation(locale)
+  const footerItems = navigation.footer.filter((item, index, array) => {
+    const currentLabel = item.label.trim().toLowerCase()
+    return array.findIndex((candidate) => candidate.label.trim().toLowerCase() === currentLabel) === index
+  })
 
   return (
     <footer className="border-t border-border/30 bg-background/90">
       <div className="container grid gap-10 py-16 md:grid-cols-[1.2fr_0.8fr]">
         <div className="space-y-6">
           <div className="space-y-2">
-            <Image
-              src="/dwe-logo-transparent.png"
-              alt={`${site.name} logo`}
-              width={160}
-              height={48}
-              className="h-9 w-auto transition dark:invert dark:brightness-110"
-            />
+            <p className="font-display text-2xl font-semibold text-foreground">{site.name}</p>
             <p className="text-sm text-muted-foreground">{site.description}</p>
           </div>
           <div className="grid gap-4 text-sm text-muted-foreground md:grid-cols-2">
@@ -70,14 +67,24 @@ export function SiteFooter() {
         </div>
         <div className="flex flex-col justify-between gap-6 text-sm text-muted-foreground">
           <nav className="flex flex-wrap gap-3">
-            {navigation.footer.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="rounded-full border border-border/40 px-3 py-1 text-xs font-semibold uppercase tracking-[0.3em] transition hover:border-primary/60 hover:text-primary"
-              >
-                {item.label}
-              </Link>
+            {footerItems.map((item) => (
+              item.href ? (
+                <Link
+                  key={`${item.label}-${item.href}`}
+                  href={item.href}
+                  className="rounded-full border border-border/40 px-3 py-1 text-xs font-semibold uppercase tracking-[0.3em] transition hover:border-primary/60 hover:text-primary"
+                >
+                  {item.label}
+                </Link>
+              ) : (
+                <span
+                  key={`${item.label}-static`}
+                  aria-disabled="true"
+                  className="cursor-default rounded-full border border-border/30 px-3 py-1 text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground/80"
+                >
+                  {item.label}
+                </span>
+              )
             ))}
           </nav>
           <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">{labels.rights(site.name)}</p>

@@ -1,5 +1,9 @@
 import { Locale } from "@/lib/i18n"
 
+const CONTACT_EMAIL = "contact.dwecreation@gmail.com"
+const CONTACT_PHONE = "+216 26 320 486"
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://dwecreation.tn"
+
 export type SiteContent = {
   name: string
   tagline: string
@@ -45,9 +49,9 @@ const siteContent: Record<Locale, SiteContent> = {
     description:
       "DWE Creation accompagne les entreprises ambitieuses de la strategie digitale a la mise en production : discovery, design, developpement, automatisation et run.",
     founded: "2023",
-    url: "https://dwe-creation.com",
-    email: "contact@dwe-creation.com",
-    phone: "+216 00 000 000",
+  url: SITE_URL,
+  email: CONTACT_EMAIL,
+  phone: CONTACT_PHONE,
     address: {
       city: "Tunis",
       country: "Tunisie",
@@ -63,10 +67,10 @@ const siteContent: Record<Locale, SiteContent> = {
     },
     socials: {
       linkedin: "https://www.linkedin.com/company/dwe-creation",
-      github: "https://github.com/dwe-creation",
+      github: "https://github.com",
       twitter: "https://twitter.com/dwecreation",
     },
-    stack: ["Next.js", "TypeScript", "Tailwind CSS", "Framer Motion", "shadcn/ui", "AWS", "Azure"],
+    stack: [],
     seo: {
       defaultTitle: "DWE Creation - Solutions logicielles sur mesure",
       defaultDescription: "Une equipe hybride pour concevoir, developper et automatiser vos outils metiers.",
@@ -83,9 +87,9 @@ const siteContent: Record<Locale, SiteContent> = {
     description:
       "DWE Creation guides ambitious companies from digital strategy to production: discovery, design, engineering, automation and run.",
     founded: "2023",
-    url: "https://dwe-creation.com",
-    email: "contact@dwe-creation.com",
-    phone: "+216 00 000 000",
+  url: SITE_URL,
+  email: CONTACT_EMAIL,
+  phone: CONTACT_PHONE,
     address: {
       city: "Tunis",
       country: "Tunisia",
@@ -101,10 +105,10 @@ const siteContent: Record<Locale, SiteContent> = {
     },
     socials: {
       linkedin: "https://www.linkedin.com/company/dwe-creation",
-      github: "https://github.com/dwe-creation",
+      github: "https://github.com",
       twitter: "https://twitter.com/dwecreation",
     },
-    stack: ["Next.js", "TypeScript", "Tailwind CSS", "Framer Motion", "shadcn/ui", "AWS", "Azure"],
+    stack: [],
     seo: {
       defaultTitle: "DWE Creation - Tailor-made software solutions",
       defaultDescription: "A hybrid team to design, build and automate your business tools.",
@@ -126,8 +130,8 @@ const navigationContent: Record<Locale, NavigationContent> = {
       { label: "Equipe", href: "/equipe" },
     ],
     footer: [
-      { label: "Mentions legales", href: "/mentions-legales" },
-      { label: "Politique de confidentialite", href: "/politique-confidentialite" },
+      { label: "Mentions legales", href: "" },
+      { label: "Politique de confidentialite", href: "" },
     ],
   },
   en: {
@@ -138,8 +142,8 @@ const navigationContent: Record<Locale, NavigationContent> = {
       { label: "Team", href: "/equipe" },
     ],
     footer: [
-      { label: "Legal notice", href: "/mentions-legales" },
-      { label: "Privacy policy", href: "/politique-confidentialite" },
+      { label: "Legal notice", href: "" },
+      { label: "Privacy policy", href: "" },
     ],
   },
 }

@@ -20,7 +20,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { fadeInUp, staggerChildren } from "@/lib/motion"
 
 const estimatorSchema = z.object({
-  scope: z.enum(["mvp", "refonte", "automation", "run"]),
+  scope: z.enum(["dev_apps", "automation", "ux_ui", "modernisation", "maintenance"]),
   users: z.enum(["50", "200", "1000", "5000+"]),
   urgency: z.enum(["2_semaines", "1_mois", "3_mois"]),
   stack: z.enum(["existing", "from_scratch", "mixed"]),
@@ -51,7 +51,7 @@ const copy = {
     budgetLabel: "Budget indicatif",
     delayLabel: "Delai",
     submit: "Recevoir une estimation detaillee",
-    scopeOptions: ["MVP complet", "Refonte", "Automation", "Run / MCO"],
+    scopeOptions: ["Développement d'apps", "Automatisation", "Design UX/UI", "Modernisation", "Maintenance & Support"],
     urgencyOptions: ["2 semaines", "1 mois", "3 mois"],
     contactEmail: "Par e-mail",
     contactCall: "Prendre un rendez-vous",
@@ -80,7 +80,7 @@ const copy = {
     budgetLabel: "Estimated budget",
     delayLabel: "Timeline",
     submit: "Receive a detailed estimate",
-    scopeOptions: ["Full MVP", "Redesign", "Automation", "Run / MCO"],
+    scopeOptions: ["App Development", "Automation", "UX/UI Design", "Modernisation", "Maintenance & Support"],
     urgencyOptions: ["2 weeks", "1 month", "3 months"],
     contactEmail: "By email",
     contactCall: "Book a meeting",
@@ -187,7 +187,7 @@ function QuickEstimatorForm({ labels, locale }: QuickEstimatorProps) {
   } = useForm<EstimatorForm>({
     resolver: zodResolver(estimatorSchema),
     defaultValues: {
-      scope: "mvp",
+      scope: "dev_apps",
       users: "200",
       urgency: "1_mois",
       stack: "existing",
@@ -201,12 +201,13 @@ function QuickEstimatorForm({ labels, locale }: QuickEstimatorProps) {
   const stack = watch("stack")
 
   const estimate = useMemo(() => {
-    const base = scope === "mvp" ? 32000 : scope === "automation" ? 28000 : scope === "run" ? 18000 : 45000
-    const multiplier = users === "50" ? 1 : users === "200" ? 1.2 : users === "1000" ? 1.5 : 1.8
-    const urgencyFactor = urgency === "2_semaines" ? 1.3 : urgency === "1_mois" ? 1.1 : 1
-    const budget = Math.round(base * multiplier * urgencyFactor)
+    const base = scope === "dev_apps" ? 2700 : scope === "automation" ? 1700 : scope === "ux_ui" ? 1000 : scope === "modernisation" ? 4000 : 800
+    const multiplier = users === "50" ? 1 : users === "200" ? 1.15 : users === "1000" ? 1.35 : 1.6
+    const urgencyFactor = urgency === "2_semaines" ? 1.25 : urgency === "1_mois" ? 1.1 : 1
+    const budgetEur = Math.round(base * multiplier * urgencyFactor)
+    const budgetDt = Math.round(budgetEur * 3.4)
     const duration = urgency === "2_semaines" ? (locale === "fr" ? "2 a 4 semaines" : "2 to 4 weeks") : urgency === "1_mois" ? (locale === "fr" ? "4 a 6 semaines" : "4 to 6 weeks") : locale === "fr" ? "6 a 10 semaines" : "6 to 10 weeks"
-    return { budget: budget.toLocaleString("fr-FR"), duration }
+    return { budgetEur: budgetEur.toLocaleString("fr-FR"), budgetDt: budgetDt.toLocaleString("fr-FR"), duration }
   }, [locale, scope, urgency, users])
 
   const onSubmit = (values: EstimatorForm) => {
@@ -215,10 +216,11 @@ function QuickEstimatorForm({ labels, locale }: QuickEstimatorProps) {
   }
 
   const scopeChoices: ChoiceConfig[] = [
-    { label: labels.scopeOptions[0], value: "mvp", name: "scope" },
-    { label: labels.scopeOptions[1], value: "refonte", name: "scope" },
-    { label: labels.scopeOptions[2], value: "automation", name: "scope" },
-    { label: labels.scopeOptions[3], value: "run", name: "scope" },
+    { label: labels.scopeOptions[0], value: "dev_apps", name: "scope" },
+    { label: labels.scopeOptions[1], value: "automation", name: "scope" },
+    { label: labels.scopeOptions[2], value: "ux_ui", name: "scope" },
+    { label: labels.scopeOptions[3], value: "modernisation", name: "scope" },
+    { label: labels.scopeOptions[4], value: "maintenance", name: "scope" },
   ]
 
   const userChoices: ChoiceConfig[] = [
@@ -244,7 +246,7 @@ function QuickEstimatorForm({ labels, locale }: QuickEstimatorProps) {
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
       <div className="grid gap-4">
         <Field label={labels.fieldScope}>
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
             {scopeChoices.map((choice) => (
               <Choice
                 key={choice.value}
@@ -313,7 +315,7 @@ function QuickEstimatorForm({ labels, locale }: QuickEstimatorProps) {
         <p className="text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground">{labels.projection}</p>
         <div className="mt-3 flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
           <span className="rounded-2xl border border-border/40 bg-card/80 px-4 py-2 text-base font-semibold text-foreground">
-            {labels.budgetLabel}: {estimate.budget} EUR
+            {labels.budgetLabel}: {estimate.budgetEur} EUR / {estimate.budgetDt} DT
           </span>
           <span className="rounded-2xl border border-border/40 bg-card/80 px-4 py-2 text-base font-semibold text-foreground">
             {labels.delayLabel}: {estimate.duration}

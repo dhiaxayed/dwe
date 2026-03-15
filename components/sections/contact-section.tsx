@@ -1,6 +1,7 @@
 ﻿"use client"
 
 import Link from "next/link"
+import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -21,16 +22,17 @@ const copy = {
     phoneLabel: "Telephone",
     phoneAvailability: "Disponible du lundi au vendredi, 9h - 18h.",
     emailLabel: "Email",
-    emailAvailability: "Reponse sous 24h ouvres garantie.",
+    emailAvailability: "Reponse sous 24h.",
     formName: "Nom & prenom",
     formCompany: "Organisation",
     formEmail: "Email professionnel",
     formPhone: "Telephone",
     formProject: "Votre besoin",
     formPlaceholder: "Decrivez votre projet, vos objectifs et les echeances cles.",
-    formBudget: "Budget estimatif (optionnel)",
     nda: "Nous signons un NDA sur simple demande avant tout partage de documents ou de donnees sensibles.",
     submit: "Envoyer ma demande",
+    success: "Merci ! Votre demande est bien recue.",
+    error: "Une erreur est survenue. Reessayez ou ecrivez-nous directement.",
     features: [
       {
         title: "Kick-off rapide",
@@ -53,16 +55,17 @@ const copy = {
     phoneLabel: "Phone",
     phoneAvailability: "Available Monday to Friday, 9am - 6pm.",
     emailLabel: "Email",
-    emailAvailability: "Answer within 24 business hours guaranteed.",
+    emailAvailability: "Answer within 24 business hours.",
     formName: "Full name",
     formCompany: "Organisation",
     formEmail: "Work email",
     formPhone: "Phone",
     formProject: "Your need",
     formPlaceholder: "Describe your project, objectives and key deadlines.",
-    formBudget: "Estimated budget (optional)",
     nda: "We sign an NDA on request before any confidential material is shared.",
     submit: "Send my request",
+    success: "Thanks! Your request is confirmed.",
+    error: "Something went wrong. Please try again or email us directly.",
     features: [
       {
         title: "Fast kick-off",
@@ -86,7 +89,6 @@ const contactSchema = z.object({
   email: z.string().email(),
   phone: z.string().optional(),
   project: z.string().min(10),
-  budget: z.string().optional(),
 })
 
 type ContactForm = z.infer<typeof contactSchema>
@@ -95,17 +97,33 @@ export function ContactSection() {
   const { locale } = useI18n()
   const labels = copy[locale]
   const site = getSite(locale)
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle")
 
   const {
     register,
     handleSubmit,
     formState: { isSubmitting },
+    reset,
   } = useForm<ContactForm>({
     resolver: zodResolver(contactSchema),
   })
 
-  const onSubmit = () => {
-    // form is posted via action attribute. Hook kept for potential custom handling.
+  const onSubmit = async (values: ContactForm) => {
+    if (status === "loading") return
+    setStatus("loading")
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...values, locale }),
+      })
+      if (!response.ok) throw new Error("Request failed")
+      reset()
+      setStatus("success")
+    } catch (error) {
+      console.error("Contact form submission failed", error)
+      setStatus("error")
+    }
   }
 
   return (
@@ -129,8 +147,8 @@ export function ContactSection() {
             </div>
             <div className="rounded-3xl border border-border/40 bg-card/80 p-6">
               <p className="text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground">{labels.emailLabel}</p>
-              <p className="mt-2 text-lg font-semibold text-foreground">
-                <Link href={`mailto:${site.email}`} className="hover:text-primary">
+              <p className="mt-2 text-lg font-semibold text-foreground break-words">
+                <Link href={`mailto:${site.email}`} className="break-all hover:text-primary">
                   {site.email}
                 </Link>
               </p>
@@ -140,9 +158,6 @@ export function ContactSection() {
         </div>
 
         <form
-          method="POST"
-          action={`https://formsubmit.co/${site.email}`}
-          target="_blank"
           className="space-y-6 rounded-[32px] border border-border/40 bg-card/85 p-8 shadow-lg shadow-primary/5"
           onSubmit={handleSubmit(onSubmit)}
         >
@@ -170,17 +185,26 @@ export function ContactSection() {
             <Label htmlFor="project">{labels.formProject}</Label>
             <Textarea id="project" rows={6} placeholder={labels.formPlaceholder} required {...register("project")} />
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="budget">{labels.formBudget}</Label>
-            <Input id="budget" placeholder="Ex. 30 000" {...register("budget")} />
-          </div>
           <div className="flex items-start gap-3 rounded-2xl border border-dashed border-primary/40 bg-primary/5 px-4 py-3 text-sm text-muted-foreground">
             <span className="mt-1 h-1.5 w-1.5 rounded-full bg-primary" />
             <p>{labels.nda}</p>
           </div>
-          <Button type="submit" size="lg" className="w-full rounded-full px-7 py-6" disabled={isSubmitting}>
-            {labels.submit}
-          </Button>
+          <div className="space-y-2">
+            <Button
+              type="submit"
+              size="lg"
+              className="w-full rounded-full px-7 py-6"
+              disabled={isSubmitting || status === "loading"}
+            >
+              {status === "loading" ? (locale === "fr" ? "Envoi..." : "Sending...") : labels.submit}
+            </Button>
+            <p
+              className={`text-sm ${status === "success" ? "text-green-500" : status === "error" ? "text-red-500" : "text-muted-foreground"}`}
+              aria-live="polite"
+            >
+              {status === "success" ? labels.success : status === "error" ? labels.error : "\u00a0"}
+            </p>
+          </div>
         </form>
       </div>
 

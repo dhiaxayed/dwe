@@ -170,7 +170,7 @@ export function TeamPageContent() {
               <p className="text-lg text-muted-foreground">{labels.closingIntro}</p>
               <div className="flex flex-wrap gap-4">
                 <Button size="lg" className="rounded-full px-7 py-6" asChild>
-                  <Link href="mailto:talents@dwe-creation.com">{labels.closingPrimary}</Link>
+                  <Link href={`mailto:${site.email}`}>{labels.closingPrimary}</Link>
                 </Button>
                 <Button size="lg" variant="outline" className="rounded-full px-7 py-6" asChild>
                   <Link href="/contact">{labels.closingSecondary}</Link>

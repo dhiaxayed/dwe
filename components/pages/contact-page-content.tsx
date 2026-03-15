@@ -1,6 +1,10 @@
 "use client"
 
 import Link from "next/link"
+import { useState } from "react"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
+import { zodResolver } from "@hookform/resolvers/zod"
 
 import { getSite } from "@/data/site"
 import { useI18n } from "@/lib/i18n"
@@ -32,6 +36,9 @@ const copy = {
       budget: "Budget estimatif (optionnel)",
       budgetPlaceholder: "Ex. 30 000 €",
       submit: "Envoyer ma demande",
+      sending: "Envoi...",
+      success: "Merci ! Votre demande a bien ete recue.",
+      error: "Une erreur est survenue. Reessayez ou ecrivez-nous directement.",
     },
     privacy:
       "Nous signons un accord de confidentialité (NDA) sur simple demande avant tout partage de documents ou de données sensibles.",
@@ -52,7 +59,7 @@ const copy = {
   },
   en: {
     heroBadge: "Contact",
-    heroTitle: "Let’s discuss your goals and design the right path",
+    heroTitle: "Let's discuss your goals and design the right path",
     heroIntro: "Share your context: we review your needs and return with a recommendation within 72 hours.",
     phoneLabel: "Phone",
     phoneHelp: "Available Monday to Friday, 9am - 6pm.",
@@ -71,6 +78,9 @@ const copy = {
       budget: "Estimated budget (optional)",
       budgetPlaceholder: "E.g. €30,000",
       submit: "Send my request",
+      sending: "Sending...",
+      success: "Thanks! Your request is confirmed.",
+      error: "Something went wrong. Please try again or email us directly.",
     },
     privacy:
       "We sign a non-disclosure agreement (NDA) upon request before sharing any sensitive documents or data.",
@@ -91,13 +101,52 @@ const copy = {
   },
 } as const
 
+const contactSchema = z.object({
+  fullname: z.string().min(2),
+  company: z.string().optional(),
+  email: z.string().email(),
+  phone: z.string().optional(),
+  project: z.string().min(10),
+  budget: z.string().optional(),
+})
+
+type ContactForm = z.infer<typeof contactSchema>
+
 export function ContactPageContent() {
   const { locale } = useI18n()
   const labels = copy[locale]
   const site = getSite(locale)
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle")
+
+  const {
+    register,
+    handleSubmit,
+    formState: { isSubmitting },
+    reset,
+  } = useForm<ContactForm>({
+    resolver: zodResolver(contactSchema),
+  })
+
+  const onSubmit = async (values: ContactForm) => {
+    if (status === "loading") return
+    setStatus("loading")
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...values, locale }),
+      })
+      if (!response.ok) throw new Error("Request failed")
+      reset()
+      setStatus("success")
+    } catch (error) {
+      console.error("Contact form submission failed", error)
+      setStatus("error")
+    }
+  }
 
   return (
-    <main className="space-y-24 py-24">
+    <div className="space-y-24 py-24">
       <section className="container grid gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
         <div className="space-y-6">
           <Badge variant="accent" className="w-fit rounded-xl px-4 py-2 text-xs uppercase tracking-[0.3em]">
@@ -119,8 +168,8 @@ export function ContactPageContent() {
             </div>
             <div className="rounded-3xl border border-border/60 bg-card/80 p-6">
               <p className="text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground">{labels.emailLabel}</p>
-              <p className="mt-2 text-lg font-semibold text-foreground">
-                <Link href={`mailto:${site.email}`} className="hover:text-primary">
+              <p className="mt-2 text-lg font-semibold text-foreground break-words">
+                <Link href={`mailto:${site.email}`} className="break-all hover:text-primary">
                   {site.email}
                 </Link>
               </p>
@@ -130,23 +179,21 @@ export function ContactPageContent() {
         </div>
 
         <form
-          method="POST"
-          action={`https://formsubmit.co/${site.email}`}
-          target="_blank"
           className="space-y-6 rounded-[32px] border border-border/60 bg-card/80 p-8 shadow-lg shadow-primary/5"
+          onSubmit={handleSubmit(onSubmit)}
         >
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
               <Label htmlFor="fullname">{labels.form.fullname}</Label>
-              <Input id="fullname" name="fullname" placeholder="Alex Martin" required autoComplete="name" />
+              <Input id="fullname" placeholder="Alex Martin" required autoComplete="name" {...register("fullname")} />
             </div>
             <div className="space-y-2">
               <Label htmlFor="company">{labels.form.company}</Label>
               <Input
                 id="company"
-                name="company"
                 placeholder={labels.form.companyPlaceholder}
                 autoComplete="organization"
+                {...register("company")}
               />
             </div>
           </div>
@@ -155,21 +202,21 @@ export function ContactPageContent() {
               <Label htmlFor="email">{labels.form.email}</Label>
               <Input
                 id="email"
-                name="email"
                 type="email"
                 placeholder={labels.form.emailPlaceholder}
                 required
                 autoComplete="email"
+                {...register("email")}
               />
             </div>
             <div className="space-y-2">
               <Label htmlFor="phone">{labels.form.phone}</Label>
               <Input
                 id="phone"
-                name="phone"
                 type="tel"
                 placeholder={labels.form.phonePlaceholder}
                 autoComplete="tel"
+                {...register("phone")}
               />
             </div>
           </div>
@@ -177,23 +224,36 @@ export function ContactPageContent() {
             <Label htmlFor="project">{labels.form.project}</Label>
             <Textarea
               id="project"
-              name="project"
               placeholder={labels.form.projectPlaceholder}
               rows={6}
               required
+              {...register("project")}
             />
           </div>
           <div className="space-y-2">
             <Label htmlFor="budget">{labels.form.budget}</Label>
-            <Input id="budget" name="budget" placeholder={labels.form.budgetPlaceholder} />
+            <Input id="budget" placeholder={labels.form.budgetPlaceholder} {...register("budget")} />
           </div>
           <div className="flex items-start gap-3 rounded-2xl border border-dashed border-primary/40 bg-primary/5 px-4 py-3 text-sm text-muted-foreground">
             <span className="mt-1 h-1.5 w-1.5 rounded-full bg-primary" />
             <p>{labels.privacy}</p>
           </div>
-          <Button type="submit" size="lg" className="w-full rounded-full px-7 py-6">
-            {labels.form.submit}
-          </Button>
+          <div className="space-y-2">
+            <Button
+              type="submit"
+              size="lg"
+              className="w-full rounded-full px-7 py-6"
+              disabled={isSubmitting || status === "loading"}
+            >
+              {status === "loading" ? labels.form.sending : labels.form.submit}
+            </Button>
+            <p
+              className={`text-sm ${status === "success" ? "text-green-500" : status === "error" ? "text-red-500" : "text-muted-foreground"}`}
+              aria-live="polite"
+            >
+              {status === "success" ? labels.form.success : status === "error" ? labels.form.error : "\u00a0"}
+            </p>
+          </div>
         </form>
       </section>
 
@@ -207,6 +267,6 @@ export function ContactPageContent() {
           ))}
         </div>
       </section>
-    </main>
+    </div>
   )
 }

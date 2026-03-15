@@ -3,8 +3,8 @@ import type { Metadata } from "next"
 import Script from "next/script"
 import { notFound } from "next/navigation"
 
-import { caseStudies } from "@/data/cases"
-import { site } from "@/data/site"
+import { getCaseStudies, getCaseStudy, getCaseStudySlugs } from "@/data/cases"
+import { getSite } from "@/data/site"
 import { buildBreadcrumbJsonLd, createMetadata } from "@/lib/seo"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -26,14 +26,13 @@ type CaseStudyPageProps = {
 }
 
 export function generateStaticParams() {
-  return caseStudies.map((caseStudy) => ({
-    slug: caseStudy.slug,
-  }))
+  return getCaseStudySlugs().map((slug) => ({ slug }))
 }
 
 export async function generateMetadata({ params }: CaseStudyPageProps): Promise<Metadata> {
   const { slug } = await params
-  const caseStudy = caseStudies.find((item) => item.slug === slug)
+  const site = getSite("fr")
+  const caseStudy = getCaseStudy("fr", slug)
 
   if (!caseStudy) {
     return createMetadata({
@@ -60,12 +59,14 @@ export async function generateMetadata({ params }: CaseStudyPageProps): Promise<
 
 export default async function CaseStudyDetailPage({ params }: CaseStudyPageProps) {
   const { slug } = await params
-  const caseStudy = caseStudies.find((item) => item.slug === slug)
+  const site = getSite("fr")
+  const caseStudy = getCaseStudy("fr", slug)
 
   if (!caseStudy) {
     notFound()
   }
 
+  const caseStudies = getCaseStudies("fr")
   const pageUrl = `${site.url}/cases/${caseStudy.slug}`
   const breadcrumbJsonLd = buildBreadcrumbJsonLd([
     { name: site.name, url: site.url },
@@ -92,7 +93,7 @@ export default async function CaseStudyDetailPage({ params }: CaseStudyPageProps
   const otherCases = caseStudies.filter((item) => item.slug !== caseStudy.slug).slice(0, 2)
 
   return (
-    <main className="space-y-24 py-24">
+    <div className="space-y-24 py-24">
       <Script
         id={`jsonld-case-${caseStudy.slug}`}
         type="application/ld+json"
@@ -162,16 +163,18 @@ export default async function CaseStudyDetailPage({ params }: CaseStudyPageProps
             </ul>
           </div>
 
-          <div className="space-y-4">
-            <h2 className="text-2xl font-semibold">Technologies mobilisées</h2>
-            <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
-              {caseStudy.stack.map((tech) => (
-                <span key={tech} className="rounded-full border border-border/60 px-3 py-1">
-                  {tech}
-                </span>
-              ))}
+          {caseStudy.stack.length > 0 ? (
+            <div className="space-y-4">
+              <h2 className="text-2xl font-semibold">Technologies mobilisées</h2>
+              <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
+                {caseStudy.stack.map((tech) => (
+                  <span key={tech} className="rounded-full border border-border/60 px-3 py-1">
+                    {tech}
+                  </span>
+                ))}
+              </div>
             </div>
-          </div>
+          ) : null}
         </div>
 
         <div className="space-y-6">
@@ -231,6 +234,6 @@ export default async function CaseStudyDetailPage({ params }: CaseStudyPageProps
           ) : null}
         </div>
       </section>
-    </main>
+    </div>
   )
 }

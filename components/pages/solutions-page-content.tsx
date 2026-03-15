@@ -12,13 +12,13 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 const copy = {
   fr: {
     heroBadge: "Solutions",
-    heroTitle: "Des produits sur mesure qui livrent des résultats mesurables",
+    heroTitle: "Transformez vos défis en avantages compétitifs",
     heroIntro:
-      "Nos équipes multidisciplinaires orchestrent chaque projet autour d’objectifs business précis, en combinant recherche utilisateur, excellence design et ingénierie fiable.",
+      "Chaque projet est une opportunité de croissance. Nous créons des solutions digitales sur mesure qui génèrent des résultats concrets pour votre entreprise.",
     heroStats: [
       {
         title: "Adoption",
-        description: "+85% d’utilisateurs actifs à J+30 sur nos lancements récents.",
+        description: "+85% d'utilisateurs actifs dès le premier mois après le lancement.",
       },
       {
         title: "ROI",
@@ -26,46 +26,46 @@ const copy = {
       },
       {
         title: "Satisfaction",
-        description: "Score NPS moyen de 58 sur les projets accompagnés.",
+        description: "Score NPS de 58 — nos clients nous recommandent.",
       },
     ],
-    approachTitle: "Notre approche",
+    approachTitle: "Pourquoi nous choisir",
     approachPoints: [
-      "Discovery et cadrage centrés utilisateurs",
-      "Prototypage rapide pour valider les parcours critiques",
-      "Delivery incrémental avec indicateurs suivis chaque sprint",
-      "Run assisté et amélioration continue post-lancement",
+      "Compréhension approfondie de vos enjeux business",
+      "Validation rapide pour réduire les risques et accélérer le lancement",
+      "Résultats mesurables à chaque étape du projet",
+      "Accompagnement continu pour maximiser l'impact après le lancement",
     ],
-    casesBadge: "Études de cas",
-    casesTitle: "Trois projets pour des directions produit, opérations et finance",
+    casesBadge: "Nos réussites",
+    casesTitle: "Des entreprises qui ont accéléré leur croissance avec nous",
     casesIntro:
-      "Explorez les défis rencontrés, les solutions déployées et les indicateurs obtenus pour chaque organisation.",
-    challenge: "Défi",
-    solution: "Solution",
-    results: "Résultats",
-    readMore: "Lire le détail",
-    closingBadge: "Envie d’aller plus loin ?",
-    closingTitle: "Analysez votre situation avec un expert produit & tech",
+      "Découvrez comment nous avons aidé des organisations ambitieuses à se transformer et à obtenir des résultats exceptionnels.",
+    challenge: "Défi business",
+    solution: "Notre réponse",
+    results: "Impact mesuré",
+    readMore: "Découvrir l'histoire",
+    closingBadge: "Prêt à passer à l'action ?",
+    closingTitle: "Échangeons sur votre prochain défi de croissance",
     closingIntro:
-      "Nous passons en revue vos parcours critiques, vos outils existants et vos objectifs pour vous proposer un plan d’action concret.",
-    closingPrimary: "Écrire à l’équipe",
-    auditTitle: "Livrables de l’audit flash",
+      "En 72 heures, nous analysons votre situation et vous proposons un plan d'action concret pour atteindre vos objectifs.",
+    closingPrimary: "Parlons de votre projet",
+    auditTitle: "Ce que vous recevez en 72h",
     auditValue: "72 h",
     auditItems: [
-      "Synthèse de vos irritants et opportunités clés",
-      "Proposition d’architecture cible & quick wins",
-      "Plan d’intervention et lotissement recommandé",
+      "Diagnostic de vos leviers de croissance clés",
+      "Recommandations stratégiques et quick wins immédiats",
+      "Plan d'action personnalisé avec ROI estimé",
     ],
   },
   en: {
     heroBadge: "Solutions",
-    heroTitle: "Tailor-made products that deliver measurable results",
+    heroTitle: "Turn your challenges into competitive advantages",
     heroIntro:
-      "Our multidisciplinary teams structure each project around precise business goals, mixing user research, design excellence and reliable engineering.",
+      "Every project is a growth opportunity. We build tailor-made digital solutions that deliver concrete results for your business.",
     heroStats: [
       {
         title: "Adoption",
-        description: "+85% active users at D+30 across recent launches.",
+        description: "+85% active users within the first month after launch.",
       },
       {
         title: "ROI",
@@ -73,35 +73,35 @@ const copy = {
       },
       {
         title: "Satisfaction",
-        description: "Average NPS score of 58 on supported projects.",
+        description: "NPS score of 58 — our clients recommend us.",
       },
     ],
-    approachTitle: "Our approach",
+    approachTitle: "Why choose us",
     approachPoints: [
-      "User-centred discovery and scoping",
-      "Rapid prototyping to validate critical journeys",
-      "Incremental delivery with tracked KPIs each sprint",
-      "Assisted run and continuous improvement after launch",
+      "Deep understanding of your business challenges",
+      "Rapid validation to reduce risk and accelerate launch",
+      "Measurable results at every project milestone",
+      "Ongoing support to maximize impact after launch",
     ],
-    casesBadge: "Case studies",
-    casesTitle: "Three projects for product, operations and finance leaders",
+    casesBadge: "Success stories",
+    casesTitle: "Companies that accelerated growth with us",
     casesIntro:
-      "Discover the challenges, deployed solutions and resulting metrics for each organisation.",
-    challenge: "Challenge",
-    solution: "Solution",
-    results: "Outcomes",
+      "See how we helped ambitious organizations transform and achieve exceptional results.",
+    challenge: "Business challenge",
+    solution: "Our response",
+    results: "Measured impact",
     readMore: "Read the story",
-    closingBadge: "Want to go further?",
-    closingTitle: "Review your situation with a product & tech expert",
+    closingBadge: "Ready to take action?",
+    closingTitle: "Let's discuss your next growth challenge",
     closingIntro:
-      "We analyse your critical journeys, existing tools and objectives to propose a concrete action plan.",
-    closingPrimary: "Write to the team",
-    auditTitle: "Flash audit deliverables",
+      "Within 72 hours, we analyze your situation and propose a concrete action plan to reach your goals.",
+    closingPrimary: "Let's talk about your project",
+    auditTitle: "What you get in 72h",
     auditValue: "72 h",
     auditItems: [
-      "Summary of key pains and opportunities",
-      "Target architecture proposal & quick wins",
-      "Recommended plan and phasing",
+      "Assessment of your key growth levers",
+      "Strategic recommendations and immediate quick wins",
+      "Personalized action plan with estimated ROI",
     ],
   },
 } as const
@@ -222,7 +222,7 @@ export function SolutionsPageContent() {
                   <Link href={site.cta.secondary.href}>{site.cta.secondary.label}</Link>
                 </Button>
                 <Button size="lg" variant="outline" className="rounded-full px-7 py-6" asChild>
-                  <Link href="mailto:talents@dwe-creation.com">{labels.closingPrimary}</Link>
+                  <Link href={`mailto:${site.email}`}>{labels.closingPrimary}</Link>
                 </Button>
               </div>
             </div>

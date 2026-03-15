@@ -156,9 +156,11 @@ export function HeroSection() {
             <Badge variant="signal" className="rounded-full px-4 py-2 text-[11px] uppercase tracking-[0.3em]">
               {site.tagline}
             </Badge>
-            <Badge variant="outline" className="rounded-full px-4 py-2 text-[11px] uppercase tracking-[0.3em]">
-              {site.stack.slice(0, 3).join(" - ")}
-            </Badge>
+            {site.stack.length > 0 ? (
+              <Badge variant="outline" className="rounded-full px-4 py-2 text-[11px] uppercase tracking-[0.3em]">
+                {site.stack.slice(0, 3).join(" - ")}
+              </Badge>
+            ) : null}
           </motion.div>
           <motion.h1
             variants={perspectiveReveal}
@@ -189,18 +191,20 @@ export function HeroSection() {
               </Link>
             </Button>
           </motion.div>
-          <motion.div variants={staggerChildren(0.05, 0.08)} className="flex flex-wrap gap-3 text-xs text-muted-foreground">
-            {/* Tech stack chips double as social proof for tooling expertise. */}
-            {site.stack.slice(0, 6).map((tech) => (
-              <motion.span
-                key={tech}
-                variants={riseReveal}
-                className="rounded-full border border-border/40 px-4 py-2 font-semibold uppercase tracking-[0.3em]"
-              >
-                {tech}
-              </motion.span>
-            ))}
-          </motion.div>
+          {site.stack.length > 0 ? (
+            <motion.div variants={staggerChildren(0.05, 0.08)} className="flex flex-wrap gap-3 text-xs text-muted-foreground">
+              {/* Tech stack chips double as social proof for tooling expertise. */}
+              {site.stack.slice(0, 6).map((tech) => (
+                <motion.span
+                  key={tech}
+                  variants={riseReveal}
+                  className="rounded-full border border-border/40 px-4 py-2 font-semibold uppercase tracking-[0.3em]"
+                >
+                  {tech}
+                </motion.span>
+              ))}
+            </motion.div>
+          ) : null}
           <motion.div variants={riseReveal} className="rounded-3xl border border-border/40 bg-card/70 p-6 shadow-soft">
             {/* Mini configurator lets prospects map our services to their context. */}
             <p className="text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground">{labels.modulesTitle}</p>
@@ -272,6 +276,7 @@ type HeroVisualizationProps = {
 
 // Visual card on the right mirrors the messaging and adds motion flourishes.
 function HeroVisualization({ prefersMotion, labels, site }: HeroVisualizationProps) {
+  const hasStackChips = site.stack.length > 0
   return (
     <TiltCard
       intensity={14}
@@ -325,17 +330,19 @@ function HeroVisualization({ prefersMotion, labels, site }: HeroVisualizationPro
               {/* Availability reminder creates urgency for booking the squad. */}
               {labels.availability(new Date().getFullYear())}
             </div>
-            <div className="grid gap-2 text-xs text-muted-foreground">
-              {/* Stack chips reinforce engineering credibility. */}
-              <p className="font-semibold uppercase tracking-[0.3em]">{labels.stackFocus}</p>
-              <div className="flex flex-wrap gap-2">
-                {site.stack.slice(0, 6).map((tech) => (
-                  <span key={tech} className="rounded-full border border-border/40 px-3 py-1">
-                    {tech}
-                  </span>
-                ))}
+            {hasStackChips ? (
+              <div className="grid gap-2 text-xs text-muted-foreground">
+                {/* Stack chips reinforce engineering credibility. */}
+                <p className="font-semibold uppercase tracking-[0.3em]">{labels.stackFocus}</p>
+                <div className="flex flex-wrap gap-2">
+                  {site.stack.slice(0, 6).map((tech) => (
+                    <span key={tech} className="rounded-full border border-border/40 px-3 py-1">
+                      {tech}
+                    </span>
+                  ))}
+                </div>
               </div>
-            </div>
+            ) : null}
           </div>
         </div>
       </InteractiveSpotlight>

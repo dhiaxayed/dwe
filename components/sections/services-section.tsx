@@ -1,6 +1,6 @@
 ﻿"use client"
 
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import Link from "next/link"
 import { AnimatePresence, motion } from "framer-motion"
 import { ArrowRight, Filter } from "lucide-react"
@@ -19,32 +19,32 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 const copy = {
   fr: {
     label: "Services",
-    title: "Des offres pretes a delivrer",
-    intro: "Ingenierie, design et run alignes sur vos KPI prioritaires.",
+    title: "Des offres qui accelerent votre croissance",
+    intro: "Stratégie, innovation et performance alignées sur vos objectifs business.",
     filterAll: "Tous les impacts",
     filterHint: "Filtrer par impact",
     viewImpact: "Impact",
     viewChrono: "Chronologie",
-    viewStack: "Stack",
+    viewStack: "Expertise",
     results: "Gains cles",
     deliverables: "Livrables cles",
     modules: "Modules phares",
-    stack: "Stack",
+    stack: "Expertise",
     explore: "Explorer le detail",
   },
   en: {
     label: "Services",
-    title: "Offers built to launch fast",
-    intro: "Engineering, design and run aligned with your top KPIs.",
+    title: "Offerings that accelerate your growth",
+    intro: "Strategy, innovation and performance aligned with your business goals.",
     filterAll: "All impacts",
     filterHint: "Filter by impact",
     viewImpact: "Impact",
     viewChrono: "Timeline",
-    viewStack: "Stack",
+    viewStack: "Expertise",
     results: "Key outcomes",
     deliverables: "Key deliverables",
     modules: "Hero modules",
-    stack: "Stack",
+    stack: "Expertise",
     explore: "View details",
   },
 }
@@ -63,9 +63,27 @@ export function ServicesSection() {
   const { locale } = useI18n()
   const labels = copy[locale]
   const services = getServices(locale)
+  const hasStackContent = services.some((service) => service.stack.length > 0)
   // These toggles power the pills above the grid.
   const [impact, setImpact] = useState<ServiceImpact | "all">("all")
   const [view, setView] = useState<"impact" | "chrono" | "stack">("impact")
+
+  useEffect(() => {
+    if (!hasStackContent && view === "stack") {
+      setView("impact")
+    }
+  }, [hasStackContent, view])
+
+  const viewOptions = hasStackContent
+    ? [
+        { key: "impact" as const, label: labels.viewImpact },
+        { key: "chrono" as const, label: labels.viewChrono },
+        { key: "stack" as const, label: labels.viewStack },
+      ]
+    : [
+        { key: "impact" as const, label: labels.viewImpact },
+        { key: "chrono" as const, label: labels.viewChrono },
+      ]
 
   // Recompute the grid whenever the user filters by impact or view mode.
   const filteredServices = useMemo(() => {
@@ -73,11 +91,11 @@ export function ServicesSection() {
     if (view === "chrono") {
       return [...base].sort((a, b) => a.duration.localeCompare(b.duration))
     }
-    if (view === "stack") {
+    if (hasStackContent && view === "stack") {
       return [...base].sort((a, b) => a.stack.length - b.stack.length)
     }
     return base
-  }, [impact, services, view])
+  }, [impact, services, view, hasStackContent])
 
   const getImpactLabel = (value: ServiceImpact) => impactLabels[value][locale]
 
@@ -138,17 +156,13 @@ export function ServicesSection() {
             ))}
           </div>
           <div className="flex flex-wrap items-center gap-2">
-            {[
-              { key: "impact", label: labels.viewImpact },
-              { key: "chrono", label: labels.viewChrono },
-              { key: "stack", label: labels.viewStack },
-            ].map((option) => (
+            {viewOptions.map((option) => (
               <Button
                 key={option.key}
                 variant={view === option.key ? "dark" : "ghost"}
                 size="sm"
                 className="rounded-full px-4"
-                onClick={() => setView(option.key as typeof view)}
+                onClick={() => setView(option.key)}
               >
                 {option.label}
               </Button>
@@ -225,13 +239,15 @@ export function ServicesSection() {
                         ))}
                       </div>
                     </div>
-                    <div className="mt-auto flex flex-wrap gap-2 text-[11px] uppercase tracking-[0.3em] text-muted-foreground">
-                      {service.stack.slice(0, 5).map((tech) => (
-                        <span key={tech} className="rounded-full border border-border/40 px-3 py-1">
-                          {tech}
-                        </span>
-                      ))}
-                    </div>
+                    {service.stack.length > 0 ? (
+                      <div className="mt-auto flex flex-wrap gap-2 text-[11px] uppercase tracking-[0.3em] text-muted-foreground">
+                        {service.stack.slice(0, 5).map((tech) => (
+                          <span key={tech} className="rounded-full border border-border/40 px-3 py-1">
+                            {tech}
+                          </span>
+                        ))}
+                      </div>
+                    ) : null}
                   </CardContent>
                   <CardFooter className="flex items-center justify-between">
                     <Badge variant="outline" className="rounded-full px-3 py-1 text-[11px] uppercase tracking-[0.3em]">

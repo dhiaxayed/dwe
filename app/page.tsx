@@ -6,12 +6,10 @@ import { ProcessSection } from "@/components/sections/process-section"
 import { ServicesSection } from "@/components/sections/services-section"
 import { TeamSection } from "@/components/sections/team-section"
 import { ValuesSection } from "@/components/sections/values-section"
-import { PageProgressBar } from "@/components/common/page-progress"
 
 export default function HomePage() {
   return (
-    <main>
-      <PageProgressBar />
+    <>
       <HeroSection />
       <ServicesSection />
       <ProcessSection />
@@ -20,6 +18,6 @@ export default function HomePage() {
       <TeamSection />
       <FaqSection />
       <CtaSection />
-    </main>
+    </>
   )
 }

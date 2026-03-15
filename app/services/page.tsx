@@ -7,19 +7,19 @@ import { CtaSection } from "@/components/sections/cta-section"
 export const metadata: Metadata = createMetadata({
   title: "Services",
   description:
-    "Des solutions sur mesure pour cadrer, designer, developper et operer vos outils digitaux.",
+    "Des offres sur mesure pour transformer vos ambitions en avantages competitifs : innovation, croissance et performance.",
   openGraph: {
     title: "Services - DWE Creation",
     description:
-      "Une equipe hybride pour construire vos produits digitaux, automatiser vos processus et securiser le run.",
+      "Accelerez votre transformation digitale avec des solutions qui creent de la valeur business mesurable.",
   },
 })
 
 export default function ServicesPage() {
   return (
-    <main className="space-y-28 py-28">
+    <div className="space-y-28 py-28">
       <ServicesSection />
       <CtaSection />
-    </main>
+    </div>
   )
 }

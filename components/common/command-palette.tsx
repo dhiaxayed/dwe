@@ -28,7 +28,7 @@ const copy = {
     services: "Services",
     cases: "Cas clients",
     actions: "Actions",
-    quote: "Demander un devis",
+    quote: "Contact",
   },
   en: {
     placeholder: "Search a page, a service or trigger an action...",
@@ -37,7 +37,7 @@ const copy = {
     services: "Services",
     cases: "Case studies",
     actions: "Actions",
-    quote: "Request a proposal",
+    quote: "Contact",
   },
 }
 

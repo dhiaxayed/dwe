@@ -1,7 +1,6 @@
 "use client"
 
 import Link from "next/link"
-import { useEffect } from "react"
 import { useI18n } from "@/lib/i18n"
 import { getService, getServices } from "@/data/services"
 import { getSite } from "@/data/site"
@@ -28,9 +27,9 @@ const copy = {
     deliverables: "Livrables detailles",
     deliverablesIntro:
       "Chaque livrable est documente et accompagne d'une session de transfert pour faciliter la prise en main par vos equipes internes.",
-    stackTitle: "Stack mobilisee",
+    stackTitle: "Expertise et savoir-faire",
     stackIntro:
-      "Nous combinons technologies du marche et composants internes pour accelerer l'execution.",
+      "Nous mobilisons les meilleures competences et methodologies pour accelerer votre reussite.",
     routeTitle: "Feuille de route type",
     routeIntro: "Une approche pragmatique en quatre phases pour securiser votre ROI.",
     phase: "Phase",
@@ -51,8 +50,8 @@ const copy = {
     deliverables: "Detailed deliverables",
     deliverablesIntro:
       "Each deliverable is documented and paired with a handover session so your teams can move fast.",
-    stackTitle: "Stack and tooling",
-    stackIntro: "We blend market-leading tech with internal components to accelerate delivery.",
+    stackTitle: "Expertise & capabilities",
+    stackIntro: "We bring together top talent and proven methodologies to accelerate your success.",
     routeTitle: "Typical delivery plan",
     routeIntro: "A pragmatic four-phase approach to secure your ROI.",
     phase: "Phase",
@@ -76,8 +75,6 @@ export function ServiceDetailContent({ slug }: ServiceDetailContentProps) {
     notFound()
   }
 
-  const relatedServices = getService('fr', slug)
-  const related = getService('fr', slug) // placeholder to avoid unused; will replace below
   const relatedEntries = ['developpement-applications', 'automatisation-processus', 'design-ux-ui', 'modernisation-refonte', 'maintenance-support']
     .filter((id) => id !== slug)
     .map((id) => getService(locale, id))
@@ -221,17 +218,19 @@ export function ServiceDetailContent({ slug }: ServiceDetailContentProps) {
             </div>
           </div>
 
-          <div className="space-y-4">
-            <h2 className="text-2xl font-semibold">{labels.stackTitle}</h2>
-            <p className="text-sm text-muted-foreground">{labels.stackIntro}</p>
-            <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
-              {service.stack.map((tech) => (
-                <span key={tech} className="rounded-full border border-border/40 px-3 py-1">
-                  {tech}
-                </span>
-              ))}
+          {service.stack.length > 0 ? (
+            <div className="space-y-4">
+              <h2 className="text-2xl font-semibold">{labels.stackTitle}</h2>
+              <p className="text-sm text-muted-foreground">{labels.stackIntro}</p>
+              <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
+                {service.stack.map((tech) => (
+                  <span key={tech} className="rounded-full border border-border/40 px-3 py-1">
+                    {tech}
+                  </span>
+                ))}
+              </div>
             </div>
-          </div>
+          ) : null}
         </div>
 
         <div className="space-y-6">

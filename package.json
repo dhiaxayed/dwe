@@ -21,6 +21,7 @@
     "@radix-ui/react-label": "^2.1.7",
     "@radix-ui/react-navigation-menu": "^1.2.14",
     "@radix-ui/react-slot": "^1.2.3",
+    "caniuse-lite": "^1.0.30001777",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "cmdk": "^1.1.1",
@@ -29,7 +30,7 @@
     "next": "^15.1.8",
     "next-sitemap": "^4.2.3",
     "next-themes": "^0.3.0",
-    "nodemailer": "^6.9.13",
+    "nodemailer": "^6.10.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-hook-form": "^7.53.0",
@@ -40,6 +41,7 @@
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.15",
+    "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.5.0",
     "@testing-library/react": "^16.0.0",
     "@testing-library/user-event": "^14.5.0",
@@ -47,12 +49,15 @@
     "@types/nodemailer": "^6.4.12",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@vitejs/plugin-react": "^5.1.2",
     "autoprefixer": "^10.4.20",
+    "baseline-browser-mapping": "^2.10.0",
     "eslint": "^8",
     "eslint-config-next": "^15.1.8",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-tailwindcss": "^3.15.1",
     "husky": "^9.0.11",
+    "jsdom": "^27.0.1",
     "lint-staged": "^15.2.7",
     "postcss": "^8.4.41",
     "prettier": "^3.3.3",
@@ -60,6 +65,7 @@
     "tailwindcss": "^3.4.12",
     "ts-node": "^10.9.2",
     "typescript": "^5",
+    "vite-tsconfig-paths": "^6.0.2",
     "vitest": "^1.6.0"
   }
 }

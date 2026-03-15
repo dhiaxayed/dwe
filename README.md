@@ -176,3 +176,60 @@ Les contributions sont les bienvenues ! N'hésitez pas à ouvrir une issue ou un
 ---
 
 Créé avec ❤️ en utilisant Next.js 15 et Context7
+
+## Email transactionnel
+
+Le formulaire de contact utilise Nodemailer (`app/api/contact/route.ts`) pour envoyer automatiquement :
+
+1. Un email de confirmation au prospect (`to: data.email`).
+2. Une copie cachee (BCC) vers votre equipe (`CONTACT_NOTIFICATION_EMAIL`).
+
+### Configuration rapide (5 minutes)
+
+1. **Copiez le fichier d'exemple**
+   ```bash
+   cp .env.example .env.local
+   ```
+2. **Renseignez vos identifiants SMTP** (`SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`). Utilisez un fournisseur dedie (SendGrid, Mailersend, Brevo, Postmark...).
+3. **Choisissez l'adresse d'expedition** (`MAIL_FROM`). Elle doit etre autorisee par votre fournisseur SMTP (SPF/DKIM aligns).
+4. **Indiquez l'adresse interne qui recevra chaque lead** (`CONTACT_NOTIFICATION_EMAIL`).
+5. **Exposez vos infos publiques** (`NEXT_PUBLIC_CONTACT_EMAIL`, `NEXT_PUBLIC_CONTACT_PHONE`, `NEXT_PUBLIC_SITE_URL`, `BRAND_NAME`, `BRAND_LOGO_URL`). Elles alimentent automatiquement la navigation et les CTA (`data/site.ts`).
+
+> Besoin d'un logo garanti même en preproduction ? Définissez `BRAND_LOGO_FILE` (ex: `dwe-logo.png`) pour embarquer automatiquement un fichier stocké dans `public/` sous forme de `data:` URI. L'email s'affichera alors même si votre CDN public n'est pas accessible.
+
+#### Exemple rapide Gmail
+
+- `SMTP_HOST=smtp.gmail.com`
+- `SMTP_PORT=465`
+- `SMTP_USER=mon-adresse@gmail.com`
+- `SMTP_PASSWORD="mot de passe d'application"` (les mots de passe classiques ne fonctionnent pas : créez un mot de passe d'application dans [accounts.google.com](https://myaccount.google.com/apppasswords)).
+
+L'adresse `MAIL_FROM` peut reprendre votre compte Gmail : `"Mon Studio <mon-adresse@gmail.com>"`.
+
+> 💡 Tant que les variables SMTP ne sont pas definies, l'API retourne `503 MAILER_NOT_CONFIGURED` en production et bascule sur un transport console en developpement.
+
+### Logo garanti dans les emails
+
+Les clients comme Gmail bloquent parfois les images distantes ou les `data:` URIs. Pour eviter toute surprise :
+
+1. Ajoutez votre logo dans `public/` (ex. `public/dwe-logo.png`).
+2. Renseignez `BRAND_LOGO_FILE=dwe-logo.png` dans `.env.local`.
+
+L'API embarque alors automatiquement ce fichier comme piece jointe inline (CID), un pattern recommande par les templates Postmark/Context7. Votre logo s'affichera meme si le CDN n'est pas accessible ou si l'utilisateur bloque les images externes.
+
+### Verification
+
+```powershell
+cd "c:\Users\user\Desktop\DWE Creation"
+npm run dev
+```
+
+Puis envoyez une requete de test :
+
+```powershell
+curl -X POST http://localhost:3000/api/contact \
+  -H "Content-Type: application/json" \
+  -d '{"fullname":"Test User","email":"user@example.com","project":"Migration de site","locale":"fr"}'
+```
+
+Vous devez recevoir `{ "ok": true }` ainsi que l'email prospect + la copie interne.

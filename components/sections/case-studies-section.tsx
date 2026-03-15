@@ -25,7 +25,6 @@ const copy = {
     ctaLead: "Mission pilote possible en 3 semaines avec reporting integre.",
     ctaPrimary: "Lancer un projet pilote",
     ctaSecondary: "Voir toutes les reussites",
-    viewProject: "Voir le projet",
   },
   en: {
     badge: "Case studies",
@@ -36,7 +35,6 @@ const copy = {
     ctaLead: "Pilot engagement ready within 3 weeks with built-in reporting.",
     ctaPrimary: "Start a pilot project",
     ctaSecondary: "Browse all stories",
-    viewProject: "View project",
   },
 }
 
@@ -205,21 +203,19 @@ function CaseStudyCard({ caseStudy, labels, prefersMotion }: CaseStudyCardProps)
           </div>
         </div>
       </div>
-      <div className="mt-6 flex items-center justify-between border-t border-border/40 pt-4">
-        {/* Footer lists tech stack and links to the full case details. */}
-        <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
-          {caseStudy.stack.slice(0, 4).map((tech) => (
-            <span key={tech} className="rounded-full border border-border/30 px-3 py-1">
-              {tech}
-            </span>
-          ))}
-        </div>
-        <Button variant="ghost" className="gap-2 px-0" asChild>
-          <Link href={`/cases/${caseStudy.slug}`}>
-            {labels.viewProject}
-            <ArrowUpRight className="h-4 w-4" />
-          </Link>
-        </Button>
+        <div className="mt-6 flex items-center justify-between border-t border-border/40 pt-4">
+          {/* Footer lists tech stack and links to the full case details. */}
+          {caseStudy.stack.length > 0 ? (
+            <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
+              {caseStudy.stack.slice(0, 4).map((tech) => (
+                <span key={tech} className="rounded-full border border-border/30 px-3 py-1">
+                  {tech}
+                </span>
+              ))}
+            </div>
+          ) : (
+            <div />
+          )}
       </div>
     </InteractiveSpotlight>
   )

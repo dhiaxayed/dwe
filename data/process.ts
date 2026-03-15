@@ -122,7 +122,7 @@ const processStepsContent: ProcessStep[] = [
     icon: "rocket",
     translations: {
       fr: {
-        title: "Deploiement & MCO",
+        title: "Deploiement & accompagnement",
         description: "Mise en production securisee, transfert de competences et accompagnement run & amelioration continue.",
         deliverables: ["Playbook de deploiement", "Monitoring et alerting", "Roadmap d'evolution"],
         duration: "Semaines 8+",

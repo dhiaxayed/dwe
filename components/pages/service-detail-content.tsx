@@ -25,8 +25,8 @@ const copy = {
     deliverables: "Livrables détaillés",
     deliverablesIntro:
       "Chaque livrable est documenté et accompagné d’une session de transfert pour faciliter la prise en main par vos équipes internes.",
-    stackTitle: "Stack mobilisée",
-    stackIntro: "Nous combinons technologies du marché et composants internes pour accélérer l’exécution.",
+    stackTitle: "Expertise et savoir-faire",
+    stackIntro: "Nous mobilisons les meilleures compétences et méthodologies pour accélérer votre réussite.",
     routeTitle: "Feuille de route type",
     routeIntro: "Une approche pragmatique en quatre phases pour sécuriser votre ROI.",
     phase: "Phase",
@@ -47,8 +47,8 @@ const copy = {
     deliverables: "Detailed deliverables",
     deliverablesIntro:
       "Each deliverable is documented and paired with a handover so your teams can move fast.",
-    stackTitle: "Stack and tooling",
-    stackIntro: "We blend proven technologies with internal components to accelerate execution.",
+    stackTitle: "Expertise & capabilities",
+    stackIntro: "We bring together top talent and proven methodologies to accelerate your success.",
     routeTitle: "Typical delivery plan",
     routeIntro: "A pragmatic four-step approach to secure your ROI.",
     phase: "Phase",

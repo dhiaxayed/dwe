@@ -18,6 +18,25 @@ const defaultMetadata: Metadata = {
     "applications web",
     "DWE Creation",
   ],
+  applicationName: site.name,
+  authors: [{ name: site.name, url: site.url }],
+  creator: site.name,
+  publisher: site.name,
+  category: "technology",
+  referrer: "origin-when-cross-origin",
+  robots: {
+    index: true,
+    follow: true,
+    nocache: false,
+    googleBot: {
+      index: true,
+      follow: true,
+      noimageindex: false,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
   openGraph: {
     type: "website",
     locale: "fr_FR",
@@ -45,10 +64,6 @@ const defaultMetadata: Metadata = {
   },
   alternates: {
     canonical: site.url,
-    languages: {
-      "fr-FR": `${site.url}/fr`,
-      "en-US": `${site.url}/en`,
-    },
   },
 }
 
