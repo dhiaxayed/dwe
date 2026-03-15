@@ -65,7 +65,7 @@ const emailCopy = {
   },
 }
 
-const normalizedSiteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://dwe-creation.com").replace(/\/$/, "")
+const normalizedSiteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://dwecreation.tn").replace(/\/$/, "")
 
 type LogoAsset = {
   src: string
