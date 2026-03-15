@@ -6,6 +6,9 @@ import { z } from "zod"
 import { readFileSync } from "fs"
 import path from "path"
 
+export const runtime = "nodejs"
+export const maxDuration = 15
+
 const normalizeValue = (value: unknown) => {
   if (typeof value === "string") return value.trim()
   if (typeof value === "number") return String(value).trim()

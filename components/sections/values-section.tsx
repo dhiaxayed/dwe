@@ -22,8 +22,9 @@ const copy = {
 
 export function ValuesSection() {
   const { locale } = useI18n()
-  const labels = copy[locale]
-  const values = getValues(locale)
+  const safeLocale = locale === "en" ? "en" : "fr"
+  const labels = copy[safeLocale]
+  const values = getValues(safeLocale) ?? getValues("fr")
 
   return (
     <section id="valeurs" className="bg-background py-24">
@@ -35,6 +36,7 @@ export function ValuesSection() {
         </div>
 
         <motion.div
+          key={`values-grid-${safeLocale}`}
           className="grid gap-6 md:grid-cols-2"
           initial="hidden"
           whileInView="visible"

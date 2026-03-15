@@ -1,8 +1,8 @@
 import { Locale } from "@/lib/i18n"
 
-const CONTACT_EMAIL = "contact.dwecreation@gmail.com"
-const CONTACT_PHONE = "+216 26 320 486"
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://dwecreation.tn"
+const CONTACT_EMAIL = process.env.NEXT_PUBLIC_CONTACT_EMAIL ?? "contact.dwecreation@gmail.com"
+const CONTACT_PHONE = process.env.NEXT_PUBLIC_CONTACT_PHONE ?? "+216 26 320 486"
+const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://dwecreation.tn").replace(/\/$/, "")
 
 export type SiteContent = {
   name: string

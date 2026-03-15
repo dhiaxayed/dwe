@@ -47,7 +47,7 @@ const defaultMetadata: Metadata = {
       "Accélérez votre transformation digitale avec une équipe d'ingénieurs et d'étudiants passionnés.",
     images: [
       {
-        url: `${site.url}/og-image.png`,
+        url: `${site.url}/dwe-logo.png`,
         width: 1200,
         height: 630,
         alt: `${site.name} - ${site.tagline}`,
@@ -60,7 +60,7 @@ const defaultMetadata: Metadata = {
     description:
       "Solutions logicielles sur mesure pour les entreprises ambitieuses.",
     creator: site.socials.twitter ?? undefined,
-    images: [`${site.url}/og-image.png`],
+    images: [`${site.url}/dwe-logo.png`],
   },
   alternates: {
     canonical: site.url,
@@ -106,7 +106,7 @@ export function buildOrganizationJsonLd(): JsonLd {
       addressCountry: site.address.country,
     },
     sameAs: Object.values(site.socials).filter(Boolean),
-    logo: `${site.url}/logo.png`,
+    logo: `${site.url}/dwe-logo.png`,
   }
 }
 
